@@ -1,0 +1,104 @@
+---
+title: "AssignmentFour"
+output: html_document
+---
+
+First install all the packages and activate libraries that I need. I also set 
+the current directory saved for this R markdown as my working directory. 
+
+```{r setup, echo = TRUE}
+library(ggplot2)
+library(ggpubr)
+library(greekLetters)
+
+mycurrentdirectory = dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(mycurrentdirectory)
+```
+
+Then we'll set our variables at y = 7 and foo = 7. And then, i'll plot my starter 
+sin plot. 
+
+```{r variables, echo = TRUE}
+foo = 7 
+y = 7
+```
+```{r sin, echo=TRUE}
+plot(sin)
+```
+
+Next, I'm going to making the adjustments needed in the assignment. 
+
+```{r sin2, echo=TRUE}
+plot(sin,ylab = expression(tau),xlab=expression(sigma))
+```
+```{r sin3, echo=TRUE}
+plot(sin,ylab = expression(tau),xlab=expression(sigma[s]^2))
+```
+```{r sin4, echo=TRUE}
+plot(sin,ylab = expression(tau),xlab=expression(sigma[s]^2),
+     col="red",lty="dotdash",lwd=3)
+```
+```{r sin5, echo=TRUE}
+plot(sin,ylab = expression(tau),xlab=expression(sigma[s]^2),
+     col="red",lty="dotdash",lwd=3, cex = 18, main=bquote(Gamma == .(foo)))
+```
+
+Finally, i'm going to print it into a 10 inch by 10 inch square with 18 point font. 
+
+```
+pdf("plot.pdf",10,10)
+plot(sin,ylab = expression(tau),xlab=expression(sigma[s]^2),
+     col="red",lty="dotdash",lwd=3, cex = 18, main=bquote(Gamma == .(foo)))
+text(0.1, 0.4, bquote(Gamma == .(foo)))
+dev.off()
+```
+
+Next, i'm going to try this in ggplot2. 
+
+```{r ggplot2setup, echo = TRUE}
+library(ggplot2)
+data(mtcars)
+```
+```{r p, echo=TRUE}
+p=ggplot(mtcars, aes(x=cyl, y = mpg)) + geom_point()
+plot(p)
+```
+
+I make the needed adjustments, however, Kevin, my for some reason my geom_text, 
+Can't convert the Gamma into actual greek notation. I haven't figured it out yet. 
+What would you recommend? 
+
+```{r p1, echo=TRUE}
+p1=ggplot(mtcars, aes(x=cyl, y = mpg)) + 
+  geom_text(x=6,y=27, label=deparse(bquote(Gamma == .(foo)))) +
+  geom_point(color="red",size=3,shape="triangle") + 
+  xlab(expression(sigma)) + 
+  ylab(expression(tau)) + 
+  ggtitle(bquote(Gamma == .(foo)))+
+  theme(plot.title = element_text(color="red", face="bold.italic",hjust = 0.5)
+              ,text=element_text(size=18))
+plot(p1)
+```
+```{r arranging2, echo= TRUE}
+ggarrange(p,p1)
+```
+```{r arrange2x2, echo = TRUE}
+ggarrange(p,p1,p,p1,nrow = 2,ncol = 2)
+```
+
+Finally, I plot them as follows: 
+
+```
+pdf("ggplot.pdf",10,10)
+p1
+dev.off()
+
+pdf("ggplot2.pdf",10,10)
+ggarrange(p,p1)
+dev.off()
+
+pdf("ggplot2by2.pdf",10,10)
+ggarrange(p,p1,p,p1,nrow = 2,ncol = 2)
+dev.off()
+
+```
